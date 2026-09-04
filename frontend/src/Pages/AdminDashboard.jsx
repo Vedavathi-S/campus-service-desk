@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import Navbar from '../Components/Navbar';
 
 const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center px-4">
+        <Navbar />
        <h1 className="text-3xl font-bold text-slate-900 mb-6">
         Admin Dashboard
         </h1>

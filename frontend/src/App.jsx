@@ -1,5 +1,4 @@
 import React from 'react'
-import Practice from './Practice'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import Dashboard from './Pages/Dashboard'
@@ -13,7 +12,7 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Practice />} />
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />

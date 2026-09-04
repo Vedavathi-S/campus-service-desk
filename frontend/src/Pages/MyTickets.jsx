@@ -1,46 +1,62 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import Navbar from '../Components/Navbar';
+import TicketCard from '../Components/TicketCard';
 
-function MyTickets() {
+const MyTickets=() => {
 
   const tickets = [
-    {
-      id: 101,
-      title: "Wi-Fi not working",
-      category: "IT",
-      priority: "HIGH",
-      status: "OPEN"
+   {
+      id: 1001,
+      title: "Wi-Fi not working in Block A",
+      category: "Internet",
+      status: "OPEN",
+      date: "04 Sep 2026",
     },
     {
-      id: 102,
-      title: "Projector problem",
-      category: "Classroom",
-      priority: "MEDIUM",
-      status: "RESOLVED"
-    }
+      id: 1002,
+      title: "Projector not working in Room 204",
+      category: "Classroom Equipment",
+      status: "IN_PROGRESS",
+      date: "03 Sep 2026",
+    },
+    {
+      id: 1003,
+      title: "Lab computer not starting",
+      category: "Laboratory",
+      status: "RESOLVED",
+      date: "01 Sep 2026",
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center px-4">
-      <h1 className="text-3xl font-bold text-slate-900 mb-6">
-        My Service Requests
-        </h1>
+    <div className="min-h-screen bg-slate-50">
+      <Navbar />
 
-      {tickets.map((ticket) => (
-        <div key={ticket.id} className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md mb-4">
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">
-            {ticket.title}</h3>
+      <main className="mx-auto max-w-6xl px-6 py-10">
 
-          <p className="text-slate-700 mb-2">
-            Category: {ticket.category}</p>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">
+              My Tickets
+            </h1>
 
-          <p className="text-slate-700 mb-2">
-            Priority: {ticket.priority}</p>
-
-          <p className="text-slate-700">
-            Status: {ticket.status}</p>
+            <p className="mt-2 text-slate-500">
+              Track and manage your service requests.
+            </p>
+          </div>
         </div>
-      ))}
+
+        <div className="space-y-4">
+          {tickets.map((ticket) => (
+            <TicketCard
+              key={ticket.id}
+              ticket={ticket}
+            />
+          ))}
+        </div>
+
+      </main>
     </div>
   );
 }
