@@ -1,5 +1,5 @@
 package com.campusdesk.backend.model;
-immport jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
