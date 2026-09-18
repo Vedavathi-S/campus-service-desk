@@ -12,10 +12,12 @@ public class AuthService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public String register(RegisterRequest registerRequest) {
@@ -38,10 +40,10 @@ public class AuthService {
         if (user == null) {
             return "Error: User not found!";
         }
-        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return "Login successful!";
-        } else {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return "Error: Invalid credentials!";
         }
+
+        return jwtService.generateToken(user.getEmail(), user.getRole());
     }
 }
