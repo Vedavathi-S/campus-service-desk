@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "../Components/Navbar";
+import { apiRequest } from "../api";
 
 const CreateTicket = () => {
   const [formData, setFormData] = useState({
@@ -16,13 +17,35 @@ const CreateTicket = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log("Ticket submitted:", formData);
+  try {
+    const ticket = {
+      title: formData.title,
+      category: formData.category,
+      priority: formData.priority,
+      description: formData.description,
+    };
 
-    alert("Ticket submitted successfully!");
-  };
+    await apiRequest("/api/tickets", {
+      method: "POST",
+      body: JSON.stringify(ticket),
+    });
+
+    alert("Ticket created successfully!");
+
+    setFormData({
+      title: "",
+      category: "",
+      priority: "",
+      description: "",
+    });
+
+  } catch (error) {
+    alert(error.message);
+  }
+};
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -130,6 +153,7 @@ const CreateTicket = () => {
             <button
               type="submit"
               className="flex-1 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+             
             >
               Submit Request
             </button>

@@ -1,7 +1,55 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+ 
+  const handleLogin = async (e) => {
+
+        e.preventDefault();
+
+        setError("");
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:8080/api/auth/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                }
+            );
+
+            const data = await response.text();
+
+            if (!response.ok) {
+                setError(data);
+                return;
+            }
+
+            localStorage.setItem("token", data);
+
+            navigate("/dashboard");
+
+        } catch (error) {
+
+            setError("Unable to connect to server");
+        }
+    };
   return (
     <div className="bg-slate-100 min-h-screen flex items-center justify-center gap-10 px-4">
      <div className="w-full max-w-md">
@@ -31,7 +79,7 @@ const Login = () => {
             Welcome back
           </h2>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
 
             {/* Email */}
             <div>
@@ -41,6 +89,8 @@ const Login = () => {
 
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -55,18 +105,25 @@ const Login = () => {
 
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-
+            
+            {error && (
+                <p className="text-red-500 text-sm">
+                    {error}
+                </p>
+            )}
 
             {/* Login Button */}
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
             >
-              Sign In
+              Login
             </button>
 
           </form>

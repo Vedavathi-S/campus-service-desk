@@ -1,33 +1,33 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import Navbar from '../Components/Navbar';
+import { useState,useEffect } from 'react';
 import TicketCard from '../Components/TicketCard';
+import { apiRequest } from '../api';
 
 const MyTickets=() => {
+  const[tickets,setTickets]=useState([]);
+  const[loading,setLoading]=useState(true);
+  const[error,setError]=useState("");
 
-  const tickets = [
-   {
-      id: 1001,
-      title: "Wi-Fi not working in Block A",
-      category: "Internet",
-      status: "OPEN",
-      date: "04 Sep 2026",
-    },
-    {
-      id: 1002,
-      title: "Projector not working in Room 204",
-      category: "Classroom Equipment",
-      status: "IN_PROGRESS",
-      date: "03 Sep 2026",
-    },
-    {
-      id: 1003,
-      title: "Lab computer not starting",
-      category: "Laboratory",
-      status: "RESOLVED",
-      date: "01 Sep 2026",
-    },
-  ];
+  useEffect(()=>{
+    const loadTickets=async()=>{
+      try{
+        const data=await apiRequest("/api/tickets");
+        setTickets(JSON.parse(data));
+
+      }
+      catch(error){
+          console.error(error);
+          setError(error.message);
+      }
+      finally{
+        setLoading(false);
+      }
+    };
+    loadTickets();
+  }
+  ,[]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -47,14 +47,38 @@ const MyTickets=() => {
           </div>
         </div>
 
-        <div className="space-y-4">
-          {tickets.map((ticket) => (
-            <TicketCard
-              key={ticket.id}
-              ticket={ticket}
-            />
-          ))}
-        </div>
+        {loading && (
+          <p className='text-slate-500'>
+            Loading Tickets...
+          </p>
+        )}
+
+         {error && (
+          <p className="rounded-lg bg-red-50 p-4 text-red-600">
+            {error}
+          </p>
+        )}
+
+         {!loading && !error && tickets.length === 0 && (
+          <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+            <p className="text-slate-500">
+              You have not created any tickets yet.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && tickets.length > 0 && (
+          <div className="space-y-4">
+
+            {tickets.map((ticket) => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+              />
+            ))}
+
+          </div>
+        )}
 
       </main>
     </div>
