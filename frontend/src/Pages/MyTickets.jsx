@@ -13,7 +13,7 @@ const MyTickets=() => {
   useEffect(()=>{
     const loadTickets=async()=>{
       try{
-        const data=await apiRequest("/api/tickets");
+        const data=await apiRequest("/api/tickets/my");
         setTickets(JSON.parse(data));
 
       }
