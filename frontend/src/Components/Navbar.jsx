@@ -26,7 +26,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-6 md:flex">
 
           <Link
-            to="/dashboard"
+            to="/admin"
             className="text-sm font-medium text-slate-600 hover:text-blue-600"
           >
             Dashboard

@@ -1,45 +1,190 @@
 import React from 'react'
+import { useState,useEffect } from 'react';
+import { apiRequest } from '../api';
 import { Link } from "react-router-dom";
 import Navbar from '../Components/Navbar';
 
 const AdminDashboard = () => {
+  const [tickets,setTickets]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const[error,setError]=useState("");
+
+  const loadTickets = async () => {
+   try{
+    const data = await apiRequest("/api/admin/tickets");
+    setTickets(JSON.parse(data));
+   }
+   catch(error)
+   {
+      console.error(error);
+      setError(error.message);
+   }
+   finally{
+    setLoading(false);
+   }
+  }
+
+  useEffect(()=>{
+  loadTickets();
+  },[])
+
+  const updateStatus = async (id, status) => {
+   try{
+     await apiRequest(`/api/admin/tickets/${id}/status`,
+      {
+        method:"PUT",
+        body:JSON.stringify(status),
+      });
+      await loadTickets();
+   }
+    catch (error) {
+
+      alert(error.message);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center px-4">
-        <Navbar />
-       <h1 className="text-3xl font-bold text-slate-900 mb-6">
-        Admin Dashboard
-        </h1>
+     <div className="min-h-screen bg-slate-50">
 
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
-        Total Requests: 52
-        </h3>
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
-        Open: 14
-        </h3>
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
-        In Progress: 10
-        </h3>
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
-        Resolved: 28
-        </h3>
+      <Navbar />
 
-      <hr />
+      <main className="mx-auto max-w-7xl px-6 py-10">
 
-      <h2 className="text-2xl font-bold text-slate-900 mb-4">
-        Recent Requests
-        </h2>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-800">
+            Admin Dashboard
+          </h1>
 
-      <p className="text-slate-700 mb-2">
-        Wi-Fi Problem — HIGH — OPEN
-      </p>
-      <p className="text-slate-700 mb-2">
-        Projector Problem — MEDIUM — IN_PROGRESS
-      </p>
-      <p className="text-slate-700">
-        ID Card Issue — LOW — RESOLVED
-      </p>
+          <p className="mt-2 text-slate-500">
+            Manage and track campus service requests.
+          </p>
+        </div>
+
+        {loading && (
+          <p className="text-slate-500">
+            Loading tickets...
+          </p>
+        )}
+
+        {error && (
+          <div className="rounded-lg bg-red-50 p-4 text-red-600">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && (
+          <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+
+            <table className="min-w-full">
+
+              <thead className="border-b bg-slate-50">
+
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                    ID
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                    Ticket
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                    Category
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                    Priority
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+                    Status
+                  </th>
+                </tr>
+
+              </thead>
+
+              <tbody className="divide-y">
+
+                {tickets.map((ticket) => (
+
+                  <tr key={ticket.id}>
+
+                    <td className="px-6 py-4 text-sm text-slate-500">
+                      #{ticket.id}
+                    </td>
+
+                    <td className="px-6 py-4">
+
+                      <p className="font-semibold text-slate-800">
+                        {ticket.title}
+                      </p>
+
+                      <p className="mt-1 text-sm text-slate-500">
+                        {ticket.description}
+                      </p>
+
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {ticket.category}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm font-medium">
+                      {ticket.priority}
+                    </td>
+
+                    <td className="px-6 py-4">
+
+                      <select
+                        value={ticket.status}
+                        onChange={(e) =>
+                          updateStatus(
+                            ticket.id,
+                            e.target.value
+                          )
+                        }
+                        className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
+                      >
+
+                        <option value="OPEN">
+                          OPEN
+                        </option>
+
+                        <option value="ASSIGNED">
+                          ASSIGNED
+                        </option>
+
+                        <option value="IN_PROGRESS">
+                          IN PROGRESS
+                        </option>
+
+                        <option value="RESOLVED">
+                          RESOLVED
+                        </option>
+
+                        <option value="CLOSED">
+                          CLOSED
+                        </option>
+
+                      </select>
+
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
+        )}
+
+      </main>
+
     </div>
-  )
-}
+  );
+};
 
 export default AdminDashboard
