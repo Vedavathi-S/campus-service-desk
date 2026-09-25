@@ -9,6 +9,24 @@ const AdminDashboard = () => {
   const [loading,setLoading]=useState(true);
   const[error,setError]=useState("");
 
+  const totalTickets = tickets.length;
+
+  const openTickets = tickets.filter(
+    (ticket) => ticket.status === "OPEN"
+  ).length;
+
+  const inProgressTickets = tickets.filter(
+    (ticket) => ticket.status === "IN_PROGRESS"
+  ).length;
+
+  const resolvedTickets = tickets.filter(
+    (ticket) => ticket.status === "RESOLVED"
+  ).length;
+
+  const closedTickets=tickets.filter(
+    (ticket)=>ticket.status==="CLOSED"
+  ).length;
+
   const loadTickets = async () => {
    try{
     const data = await apiRequest("/api/admin/tickets");
@@ -33,13 +51,16 @@ const AdminDashboard = () => {
      await apiRequest(`/api/admin/tickets/${id}/status`,
       {
         method:"PUT",
-        body:JSON.stringify(status),
+        body:JSON.stringify({
+        status: status,
+      }),
       });
       await loadTickets();
    }
     catch (error) {
 
-      alert(error.message);
+    console.error("Status update failed:", error);
+    alert("Failed to update status: " + error.message);
     }
   }
 
@@ -59,6 +80,60 @@ const AdminDashboard = () => {
             Manage and track campus service requests.
           </p>
         </div>
+
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm font-medium text-slate-500">
+          Total Tickets
+        </p>
+
+        <p className="mt-2 text-3xl font-bold text-slate-800">
+          {totalTickets}
+        </p>
+      </div>
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm font-medium text-slate-500">
+          Open
+        </p>
+
+        <p className="mt-2 text-3xl font-bold text-slate-800">
+          {openTickets}
+        </p>
+      </div>
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm font-medium text-slate-500">
+          In Progress
+        </p>
+
+        <p className="mt-2 text-3xl font-bold text-slate-800">
+          {inProgressTickets}
+        </p>
+      </div>
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm font-medium text-slate-500">
+          Resolved
+        </p>
+
+        <p className="mt-2 text-3xl font-bold text-slate-800">
+          {resolvedTickets}
+        </p>
+      </div>
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <p className="text-sm font-medium text-slate-500">
+        Closed
+      </p>
+
+      <p className="mt-2 text-3xl font-bold text-slate-800">
+        {closedTickets}
+      </p>
+    </div>
+
+    </div>
 
         {loading && (
           <p className="text-slate-500">
