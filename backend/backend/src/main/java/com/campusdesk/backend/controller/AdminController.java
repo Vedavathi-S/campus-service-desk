@@ -25,9 +25,4 @@ public class AdminController {
         return "Admin Dashboard - Access granted!";
     }
 
-    @PutMapping("/tickets/{id}/status")
-    public Ticket updateStatus(@PathVariable Long id, @RequestBody String status)
-    {
-        return ticketService.updateStatus(id,status);
-    }
 }
