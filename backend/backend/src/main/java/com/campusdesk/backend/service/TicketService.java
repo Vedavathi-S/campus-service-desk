@@ -31,6 +31,11 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
+    public Ticket getTicketById(Long id)
+    {
+        return ticketRepository.findById(id).orElseThrow();
+    } 
+
     public List<Ticket> getMyTickets(String email)
     {
         User user=userRepository.findByEmail(email).orElseThrow();

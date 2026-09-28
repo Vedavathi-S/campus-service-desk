@@ -23,6 +23,13 @@ public class TicketController {
         String email = authentication.getName();
         return ticketService.getMyTickets(email);
     }
+    
+    @GetMapping("/{id}")
+    public Ticket getTicket(@PathVariable Long id)
+    {
+        return ticketService.getTicketById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket,Authentication authentication) {

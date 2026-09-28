@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Ticket {
@@ -18,6 +19,7 @@ public class Ticket {
     private String description;
 
     @ManyToOne
+    @JsonIgnore
     private User createdBy;
 
     public Ticket() {

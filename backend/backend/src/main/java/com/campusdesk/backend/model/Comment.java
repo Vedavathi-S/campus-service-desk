@@ -6,6 +6,8 @@ import com.campusdesk.backend.model.Ticket;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Comment{
 
@@ -16,9 +18,11 @@ public class Comment{
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     @ManyToOne
+    @JsonIgnore
     private Ticket ticket;
 
     public Comment() {
