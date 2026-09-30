@@ -30,9 +30,13 @@ public class CommentService {
 
      public Comment addComment(Long ticketId,String message,String email)
     {
+       if(message==null || message.trim().isEmpty())
+       {
+        throw new IllegalArgumentException("Comment message cannot be empty");
+       }
        User user=userRepository.findByEmail(email).orElseThrow();
        Ticket ticket=ticketRepository.findById(ticketId).orElseThrow();
-       Comment comment=new Comment(message,user,ticket);
+       Comment comment=new Comment(message.trim(),user,ticket);
 
        return commentRepository.save(comment);
 
