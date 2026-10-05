@@ -13,10 +13,12 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
-    public TicketService(TicketRepository ticketRepository,UserRepository userRepository) {
+    public TicketService(TicketRepository ticketRepository,UserRepository userRepository,NotificationService notificationService) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public List<Ticket> getAllTickets() {
@@ -46,6 +48,10 @@ public class TicketService {
     {
         Ticket ticket=ticketRepository.findById(ticketId).orElseThrow();
         ticket.setStatus(status);
-        return ticketRepository.save(ticket);
+         Ticket updatedTicket = ticketRepository.save(ticket);
+         User student = ticket.getCreatedBy();
+         String message = "Your ticket with ID " + ticket.getId() + " has been updated to status: " + status;
+         notificationService.sendNotification(student.getEmail(), message);
+         return updatedTicket;
     }
 }
